@@ -1,11 +1,11 @@
-#**MC322 - Turma B"
+# **MC322**- Turma B
 
-#**Aluno**
+# **Aluno**
     Guilhermo de Luiggi Mocelim de Oliveira
 
-#**RA**
+# **RA**
     223325
 
-#**Curso**
+# **Curso**
     Ciência da Computação
 
