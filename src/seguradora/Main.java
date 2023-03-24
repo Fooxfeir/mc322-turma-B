@@ -16,7 +16,7 @@ public class Main {
 		Seguradora newSeguradora = new Seguradora("Sete Palmos", "Curitiba", "666", "7plms@orkut.com");
 		System.out.println(newSeguradora.toString());
 		
-		//changes information, checking alterations
+		//changes information, checking alterations.
 		newSeguradora.setEmail("novo@gmail.com");
 		System.out.println(newSeguradora.toString());
 
