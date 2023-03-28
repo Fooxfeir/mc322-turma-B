@@ -19,6 +19,8 @@ public class Main {
 		//changes information, checking alterations.
 		newSeguradora.setEmail("novo@gmail.com");
 		System.out.println(newSeguradora.toString());
+		
+		//comentário teste
 
 		//new vehicle
 		Veiculo newVeiculo = new Veiculo("FST42ER", "E-racing", "Speed4");
