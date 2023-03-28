@@ -1,4 +1,4 @@
-package seguradora;
+
 
 public class Main {
 

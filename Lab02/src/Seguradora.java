@@ -1,4 +1,3 @@
-package seguradora;
 
 public class Seguradora {
 	private String nome;

@@ -1,4 +1,4 @@
-package seguradora;
+
 
 public class Sinistro {
 	private static int gerador = 0;
