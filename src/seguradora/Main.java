@@ -28,6 +28,7 @@ public class Main {
 		Sinistro newSinistro = new Sinistro("Campinas", "14/04/2023");
 		System.out.println(newSinistro.getId());
 		
+		
 		//checks if id is increasing
 		Sinistro newSinistro2 = new Sinistro("Campinas", "15/04/2023");
 		System.out.println(newSinistro2.getId());
