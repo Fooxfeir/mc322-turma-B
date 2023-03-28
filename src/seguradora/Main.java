@@ -20,8 +20,6 @@ public class Main {
 		newSeguradora.setEmail("novo@gmail.com");
 		System.out.println(newSeguradora.toString());
 		
-		//comentário teste
-
 		//new vehicle
 		Veiculo newVeiculo = new Veiculo("FST42ER", "E-racing", "Speed4");
 		System.out.println(newVeiculo.toString());
