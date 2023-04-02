@@ -5,6 +5,7 @@ public class Sinistro {
 	private int id;
 	private String endereco;
 	private String data;
+	//esse comentário é um teste
 	
 	//Constructor
 	public Sinistro(String endereco, String data) {
