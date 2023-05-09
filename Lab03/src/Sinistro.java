@@ -2,15 +2,20 @@
 
 public class Sinistro {
 	private static int gerador = 0;
-	private int id;
+	private final int id;
 	private String endereco;
 	private String data;
-	//esse comentário é um teste
+	private Seguradora seguradora;
+	private Veiculo veiculo;
+	private Cliente cliente;
 	
 	//Constructor
-	public Sinistro(String endereco, String data) {
+	public Sinistro(String endereco, String data, Seguradora seguradora, Veiculo veiculo, Cliente cliente) {
 		this.endereco = endereco;
 		this.data = data;
+		this.seguradora = seguradora;
+		this.veiculo = veiculo;
+		this.cliente = cliente;
 		gerador++;
 		id = gerador;
 	}
@@ -18,10 +23,6 @@ public class Sinistro {
 	//Getters e setters
 	public int getId() {
 		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public String getEndereco() {
@@ -40,4 +41,23 @@ public class Sinistro {
 		this.data = data;
 	}
 	
+
+	public static int getGerador() {
+		return gerador;
+	}
+	
+
+	public Seguradora getSeguradora() {
+		return seguradora;
+	}
+	
+
+	public Veiculo getVeiculo() {
+		return veiculo;
+	}
+	
+
+	public Cliente getCliente() {
+		return cliente;
+	}
 }
