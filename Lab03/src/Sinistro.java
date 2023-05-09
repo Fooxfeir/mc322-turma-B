@@ -60,4 +60,10 @@ public class Sinistro {
 	public Cliente getCliente() {
 		return cliente;
 	}
+	
+	@Override
+	public String toString() {
+		return "Sinistro [id=" + id + ", endereco=" + endereco + ", data=" + data + ", seguradora=" + seguradora
+				+ ", veiculo=" + veiculo + ", cliente=" + cliente + "]";
+	}
 }

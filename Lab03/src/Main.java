@@ -20,7 +20,23 @@ public class Main {
 				if (comando.compareTo("PF") == 0) {
 					System.out.println("Qual o CPF? ");
 					String cpf = sc.next();
-					ClientePF novoCliente = new ClientePF(nome, endereco, cpf, null, null, null, null, null);
+					System.out.println("Qual o genero? ");
+					String genero = sc.next();
+					ClientePF novoCliente = new ClientePF(nome, endereco, cpf, genero, null, "EM", null, "Média");
+					System.out.println("Quantos carros possui? ");
+					int qntCarros = sc.nextInt();
+					for (int i = 0; i < qntCarros; i++) {
+						System.out.println("Qual a placa? ");
+						String placa = sc.next();
+						System.out.println("Qual a marca? ");
+						String marca = sc.next();
+						System.out.println("Qual o modelo? ");
+						String modelo = sc.next();
+						System.out.println("Qual o ano? ");
+						int ano = sc.nextInt();
+						Veiculo carro = new Veiculo(placa, marca, modelo, ano);
+						novoCliente.adiocionarVeiculo(carro);
+					}
 					if (novoCliente.validarCPF(cpf) == false) {
 						System.out.println("Dados inválidos! ");
 					}
@@ -32,6 +48,21 @@ public class Main {
 					System.out.println("Qual o CNPJ? ");
 					String cnpj = sc.next();
 					ClientePJ novoCliente = new ClientePJ(nome, endereco, cnpj, null);
+					System.out.println("Quantos carros possui? ");
+					int qntCarros = sc.nextInt();
+					for (int i = 0; i < qntCarros; i++) {
+						System.out.println("Qual a placa? ");
+						String placa = sc.next();
+						System.out.println("Qual a marca? ");
+						String marca = sc.next();
+						System.out.println("Qual o modelo? ");
+						String modelo = sc.next();
+						System.out.println("Qual o ano? ");
+						int ano = sc.nextInt();
+						Veiculo carro = new Veiculo(placa, marca, modelo, ano);
+						novoCliente.adiocionarVeiculo(carro);
+					}
+
 					if (novoCliente.validarCNPJ(cnpj) == false) {
 						System.out.println("Dados inválidos! ");
 					}

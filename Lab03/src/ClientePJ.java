@@ -17,59 +17,58 @@ public class ClientePJ extends Cliente {
 	}
 	
 	public boolean validarCNPJ(String cnpj) {
-		if (cnpj.equals("00000000000000") || cnpj.equals("11111111111111") ||
-			cnpj.equals("22222222222222") || cnpj.equals("33333333333333") ||
-			cnpj.equals("44444444444444") || cnpj.equals("55555555555555") ||
-			cnpj.equals("66666666666666") || cnpj.equals("77777777777777") ||
-			cnpj.equals("88888888888888") || cnpj.equals("99999999999999") ||
-			(cnpj.length() != 14))
-			return(false);
-		char digito13;
-		char digito14;
-		int soma = 0;
-		int peso = 2;
-		
-		 //primeiro verificador
-		for (int i = 0; i < 11; i++) {
-			int digito = (int)(cnpj.charAt(i) - 48);
-		    soma = soma + (digito * peso);
-		    peso = peso + 1;
-		    if (peso == 10)
-		    	peso = 2;
-		}
-		int resto = soma % 11;
-		if (resto == 0 || resto == 1) {
-			digito13 = '0';
-		}
-		else {
-			digito13 = (char) ((11 - resto) + 48);
+		//verifies the size of the string
+		cnpj = cnpj.replaceAll("[^\\d]", "");
+		if (cnpj.length() != 14){
+			return false;
 		}
 		
-		//segundo verificador
-		soma = 0;
-		peso = 2;
-		for (int i = 12; i >= 0; i--) {
-			int digito = (int)(cnpj.charAt(i) - 48);
-			soma = soma + (digito * peso);
-			peso = peso + 1;
-			if (peso == 10) {
-				peso = 2;
+		//verifies if the string is made of the same numbers
+		int igual = 1;
+		for (int i = 0; i < 12; i++) {
+			if (cnpj.charAt(i) != cnpj.charAt(0)) {
+				igual = 0;
+				break;
 			}
 		}
-		resto = soma % 11;
-		if (resto == 0 || resto == 1) {
-			digito14 = '0';
+		if (igual == 1)
+			return false;
+		
+		//verifying numbers
+		int soma = 0;
+		int algarismo[] = {5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2};
+		int algarismo1[] = {6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2};
+		for (int i = 0; i < 12; i++) {
+			int digito = Integer.parseInt("" + cnpj.charAt(i));
+			soma += algarismo[i]*digito;
 		}
+		int resto = soma % 11;
+		if (resto < 2)
+			resto = 0;
 		else {
-			digito14 = (char) ((11 - resto) + 48);
+			resto = 11 - resto;
+		}
+		int verificador = Integer.parseInt("" + cnpj.charAt(12));
+		if (resto != verificador) {
+			return false;
 		}
 		
-	    if ((digito13 == cnpj.charAt(12)) && (digito14 == cnpj.charAt(13)))
-	         return true;
+		soma = 0;
+		for (int i = 0; i < 13; i++) {
+			int digito = Integer.parseInt("" + cnpj.charAt(i));
+			soma += algarismo1[i]*digito;
+		}
+		resto = soma % 11;
+		if (resto < 2)
+			resto = 0;
+		else
+			resto = 11 - resto;
+		verificador = Integer.parseInt("" + cnpj.charAt(13));
+		if (resto != verificador) {
+			return false;
+		}
 		
-	    else {
-	    	return false;
-	    }
+		return true;
 	}
 
 	public String getCnpj() {

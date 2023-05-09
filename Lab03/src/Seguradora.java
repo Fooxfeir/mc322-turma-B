@@ -104,6 +104,7 @@ public class Seguradora {
 	/*
 	 * Adds a new accident to the list
 	 */
+	@SuppressWarnings("resource")
 	public boolean gerarSinistro() {
 		System.out.println("Informe a data do sinistro ");
 		Scanner sc = new Scanner(System.in);
@@ -141,7 +142,6 @@ public class Seguradora {
 		}
 		Sinistro novoSinistro = new Sinistro(endereco, data, this, veiculoAtual, clienteAtual);
 		listaSinistros.add(novoSinistro);
-		sc.close();
 		return true;
 	}
 	
@@ -168,6 +168,7 @@ public class Seguradora {
 		for (int i = 0; i < listaSinistros.size(); i++) {
 			atual = listaSinistros.get(i);
 			System.out.print(atual.toString());
+
 		}
 	} 
 	
