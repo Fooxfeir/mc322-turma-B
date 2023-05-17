@@ -2,11 +2,13 @@
 public class ClientePJ extends Cliente {
 	private final String cnpj;
 	private Date dataFundacao;
+	private int qtdeFuncionarios;
 	
-	public ClientePJ(String nome, String endereco, String cnpj, Date dataFundacao) {
+	public ClientePJ(String nome, String endereco, String cnpj, Date dataFundacao, int qtdeFuncionarios) {
 		super(nome, endereco);
 		this.cnpj = cnpj;
 		this.dataFundacao = dataFundacao;
+		this.qtdeFuncionarios = qtdeFuncionarios;
 	}
 	
 	public boolean compararCliente(ClientePJ comparado) {
@@ -16,7 +18,11 @@ public class ClientePJ extends Cliente {
 		return true;
 	}
 	
-	public boolean validarCNPJ(String cnpj) {
+	public String identificar() {
+		return cnpj;
+	}
+	
+	public boolean validaCNPJ(String cnpj) {
 		//verifies the size of the string
 		cnpj = cnpj.replaceAll("[^\\d]", "");
 		if (cnpj.length() != 14){
@@ -71,6 +77,13 @@ public class ClientePJ extends Cliente {
 		return true;
 	}
 
+	public double calculaScore() {
+		double base = CalcSeguro.VALOR_BASE.getModificador();
+		int carros = this.getListaVeiculos().size();
+		double score = base * (1 + (qtdeFuncionarios)/100) * carros;
+		return score;
+	}
+	
 	public String getCnpj() {
 		return cnpj;
 	}
@@ -83,9 +96,18 @@ public class ClientePJ extends Cliente {
 		this.dataFundacao = dataFundacao;
 	}
 	
+	public int getQtdeFuncionarios() {
+		return qtdeFuncionarios;
+	}
+
+	public void setQtdeFuncionarios(int qtdeFuncionarios) {
+		this.qtdeFuncionarios = qtdeFuncionarios;
+	}
+
 	@Override
 	public String toString() {
-		return "ClientePJ [cnpj=" + cnpj + ", dataFundacao=" + dataFundacao + "]";
+		return "ClientePJ [cnpj=" + cnpj + ", dataFundacao=" + dataFundacao + ", qtdeFuncionarios=" + qtdeFuncionarios
+				+ ", valor seguro" + super.getValorSeguro() + "]";
 	}
 
 }

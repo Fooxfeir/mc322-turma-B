@@ -73,6 +73,27 @@ public class ClientePF extends Cliente {
 		return true;
 	}
 	
+	public double calculaScore() {
+		double modificador = 0;
+		double base = CalcSeguro.VALOR_BASE.getModificador();
+		int idade = dataLicenca.getAno() - dataNascimento.getAno();
+		if (idade >= 18 && idade < 30) {
+			modificador = CalcSeguro.FATOR_18_30.getModificador();
+		}
+		else if (idade >= 30 && idade < 60) {
+			modificador = CalcSeguro.FATOR_30_60.getModificador();
+		}
+		else if (idade >= 60 && idade < 90) {
+			modificador = CalcSeguro.FATOR_60_90.getModificador();
+		}
+		int carros = this.getListaVeiculos().size();
+		double score = base * modificador * carros;
+		return score;
+	}
+	
+	public String identificar() {
+		return cpf;
+	}
 	//Getters e setters
 
 
@@ -145,6 +166,7 @@ public class ClientePF extends Cliente {
 	@Override
 	public String toString() {
 		return "ClientePF [cpf=" + cpf + ", genero=" + genero + ", dataLicenca=" + dataLicenca + ", educacao="
-				+ educacao + ", dataNascimento=" + dataNascimento + ", classeEconomica=" + classeEconomica + "]";
+				+ educacao + ", dataNascimento=" + dataNascimento + ", classeEconomica=" + classeEconomica
+				+ ", valor seguro:" + super.getValorSeguro() + "]";
 	}
 }

@@ -54,50 +54,21 @@ public class Seguradora {
 	 * Returns true if successful
 	 * Returns false if the client is not found
 	 */
-	public boolean removerCliente(ClientePF cliente) {
+	public boolean removerCliente(String identificador) {
 		Cliente atual;
 		for (int i = 0; i < listaClientes.size(); i ++) {
 			atual = listaClientes.get(i);
-			if (atual instanceof ClientePF) {
-				if (((ClientePF) atual).compararCliente(cliente)) {
-					listaClientes.remove(i);
-					return true;
-				}
+			if (identificador.compareTo(atual.identificar()) == 0) {
+				listaClientes.remove(i);
+				return true;
 			}
 		}
 		return false;
 	}
 	
-	public boolean removerCliente(ClientePJ cliente) {
-		Cliente atual;
-		for (int i = 0; i < listaClientes.size(); i ++) {
-			atual = listaClientes.get(i);
-			if (atual instanceof ClientePJ) {
-				if (((ClientePJ) atual).compararCliente(cliente)) {
-					listaClientes.remove(i);
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
-	public void listarClientes(String tipoCliente) {
-		if (tipoCliente.compareToIgnoreCase("PF") == 0) {
-			for (int i = 0; i < listaClientes.size(); i++) {
-				Cliente atual = listaClientes.get(i);
-				if (atual instanceof ClientePF) {
-					System.out.println(((ClientePF) atual).toString());
-				}
-			}
-		}
-		else {
-			for (int i = 0; i < listaClientes.size(); i++) {
-				Cliente atual = listaClientes.get(i);
-				if (atual instanceof ClientePJ) {
-					System.out.println(((ClientePJ) atual).toString());
-				}
-			}
+	public void listarClientes() {
+		for (Cliente i : listaClientes) {
+			System.out.println(i.toString());
 		}
 	}
 	
@@ -113,16 +84,15 @@ public class Seguradora {
 		String endereco = sc.next();
 		System.out.println("Qual o nome do cliente do sinistro? ");
 		String nomeCliente = sc.next();
-		Cliente clienteAtual = new Cliente(null, null);
+		Cliente clienteAtual = null;
 		for (int i = 0; i < listaClientes.size(); i++) {
 			clienteAtual = listaClientes.get(i);
 			if (nomeCliente.compareTo(clienteAtual.getNome()) == 0) {
 				break;
 			}
 		}
-		if (clienteAtual.getNome() == null) {
+		if (clienteAtual == null) {
 			System.out.println("Cliente inexistente! ");
-			sc.close();
 			return false;
 		}
 		System.out.println("Qual a placa do veículo do sinistro? ");
@@ -137,10 +107,11 @@ public class Seguradora {
 		}
 		if (veiculoAtual.getPlaca() == null) {
 			System.out.println("Veículo inexistente! ");
-			sc.close();
 			return false;
 		}
 		Sinistro novoSinistro = new Sinistro(endereco, data, this, veiculoAtual, clienteAtual);
+		double valor = calcularPrecoSeguroCliente(clienteAtual.identificar());
+		clienteAtual.setValorSeguro(valor);
 		listaSinistros.add(novoSinistro);
 		return true;
 	}
@@ -148,11 +119,11 @@ public class Seguradora {
 	/*
 	 * Visualizes the accident
 	 */
-	public boolean visualizarSinistro(String cliente) {
+	public boolean visualizarSinistro(String identificador) {
 		Sinistro atual;
 		for (int i = 0; i < listaSinistros.size(); i++) {
 			atual = listaSinistros.get(i);
-			if (cliente.compareTo(atual.getCliente().getNome()) == 0) { 
+			if (identificador.compareTo(atual.getCliente().identificar()) == 0) { 
 				System.out.print(atual.toString());
 				return true;
 			}
@@ -172,6 +143,63 @@ public class Seguradora {
 		}
 	} 
 	
+	public double calcularPrecoSeguroCliente(String id) {
+		Cliente cliente = null;
+		double preco;
+		for (Cliente i : listaClientes) {
+			if (id.compareTo(i.identificar()) == 0) {
+				cliente = i;
+				break;
+			}
+		}
+		int sinistros = 0;
+		for (Sinistro i : listaSinistros) {
+			if (cliente.identificar().compareTo(i.getCliente().identificar()) == 0) {
+				sinistros++;
+			}
+		}
+		preco = cliente.calculaScore() * (1 + sinistros);
+		return preco;
+		
+	}
+	
+	public void transferirSeguro(String idOrigem, String idDestino) {
+		Cliente clienteOrigem = null;
+		Cliente clienteDestino = null;
+		for (Cliente clienteAtual : listaClientes) {
+			if (clienteAtual.identificar().compareTo(idOrigem) == 0) {
+				clienteOrigem = clienteAtual;
+			}
+			else if (clienteAtual.identificar().compareTo(idDestino) == 0) {
+				clienteDestino = clienteAtual;
+			}
+		}
+		if (clienteOrigem == null || clienteDestino == null) {
+			System.out.println("Cliente não encontrado! ");
+			return;
+		}
+		//checar se ele passa uma cópia ou um ponteiro
+		//programa quebra se for cópia
+		ArrayList<Veiculo> listaOrigem = clienteOrigem.getListaVeiculos();
+		ArrayList<Veiculo> listaDestino = clienteDestino.getListaVeiculos();
+		for (int i = 0; i < listaOrigem.size(); i++) {
+			listaDestino.add(listaOrigem.get(0));
+			listaOrigem.remove(0);										
+		}
+		clienteOrigem.setValorSeguro(0);
+		double novoValor = calcularPrecoSeguroCliente(clienteDestino.identificar());
+		clienteDestino.setValorSeguro(novoValor);
+		
+	}
+	
+	public double calcularReceita() {
+		double receita = 0;
+		for (Cliente i : listaClientes) {
+			receita += i.getValorSeguro();
+		}
+		
+		return receita;
+	}
 	//Getters and setters
 	public String getNome() {
 		return nome;

@@ -13,13 +13,28 @@ public class Main {
 			if (comando.compareTo("Cadastrar_cliente") == 0) {
 				System.out.println("PF ou PJ? ");
 				comando = sc.next();
-				System.out.println("Qual o nome? ");
-				String nome = sc.next();
+				
+				String nome;
+				do {
+					System.out.println("Qual o nome? ");
+					nome = sc.next();
+					if (!Validacao.validaNome(nome)) {
+						System.out.println("Nome inválido ");
+					}
+				} while (!Validacao.validaNome(nome));
+				
 				System.out.println("Qual o endereço? ");
 				String endereco = sc.next();
+				
 				if (comando.compareTo("PF") == 0) {
-					System.out.println("Qual o CPF? ");
-					String cpf = sc.next();
+					String cpf;
+					do {
+						System.out.println("Qual o CPF? ");
+						cpf = sc.next();
+						if (!Validacao.validaCPF(cpf)) {
+							System.out.println("CPF inválido ");
+						}
+					} while (!Validacao.validaCPF(cpf));
 					System.out.println("Qual o genero? ");
 					String genero = sc.next();
 					ClientePF novoCliente = new ClientePF(nome, endereco, cpf, genero, null, "EM", null, "Média");
@@ -47,7 +62,9 @@ public class Main {
 				else {
 					System.out.println("Qual o CNPJ? ");
 					String cnpj = sc.next();
-					ClientePJ novoCliente = new ClientePJ(nome, endereco, cnpj, null);
+					System.out.println("Quantos funcionários possui? ");
+					int qtdeFuncionarios = sc.nextInt();
+					ClientePJ novoCliente = new ClientePJ(nome, endereco, cnpj, null, qtdeFuncionarios);
 					System.out.println("Quantos carros possui? ");
 					int qntCarros = sc.nextInt();
 					for (int i = 0; i < qntCarros; i++) {
@@ -63,7 +80,7 @@ public class Main {
 						novoCliente.adiocionarVeiculo(carro);
 					}
 
-					if (novoCliente.validarCNPJ(cnpj) == false) {
+					if (novoCliente.validaCNPJ(cnpj) == false) {
 						System.out.println("Dados inválidos! ");
 					}
 					else {
@@ -72,27 +89,15 @@ public class Main {
 				}
 			}
 			else if (comando.compareTo("Remover_cliente") == 0) {
-				System.out.println("PF ou PJ? ");
+				System.out.println("Qual seu CPF/CNPJ? ");
 				comando = sc.next();
-				if (comando.compareTo("PF") == 0) {
-					System.out.println("Qual o CPF? ");
-					String cpf = sc.next();
-					ClientePF removido = new ClientePF(null, null, null, cpf, null, null, null, null);
-					setePalmos.removerCliente(removido);
-				}
-				else {
-					System.out.println("Qual o CNPJ? ");
-					String cnpj = sc.next();
-					ClientePJ removido = new ClientePJ(null, null, cnpj, null);
-					setePalmos.removerCliente(removido);
-				}
-					
+				setePalmos.removerCliente(comando);
 			}
 			else if (comando.compareTo("Gerar_sinistro") == 0) {
 				setePalmos.gerarSinistro();
 			}
 			else if (comando.compareTo("Visualizar_sinistro") == 0) {
-				System.out.println("Qual o nome do cliente? ");
+				System.out.println("Qual o CPF/CNPJ do cliente? ");
 				String nome = sc.next();
 				setePalmos.visualizarSinistro(nome);
 			}
@@ -100,9 +105,7 @@ public class Main {
 				setePalmos.listarSinistros();
 			}
 			else if (comando.compareTo("Listar_clientes") == 0) {
-				System.out.println("PF ou PJ? ");
-				comando = sc.next();
-				setePalmos.listarClientes(comando);
+				setePalmos.listarClientes();
 			}
 
 		} while (comando.compareTo("Terminar") != 0);
