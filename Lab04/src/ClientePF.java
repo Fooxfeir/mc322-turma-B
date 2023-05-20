@@ -24,59 +24,11 @@ public class ClientePF extends Cliente {
 		}
 		return true;
 	}
-	
-	public boolean validarCPF(String cpf) {
-		//verifies the size of the string
-		cpf = cpf.replaceAll("[^\\d]", "");
-		if (cpf.length() != 11){
-			return false;
-		}
-		
-		//verifies if the string is made of the same numbers
-		int igual = 1;
-		for (int i = 0; i < 11; i++) {
-			if (cpf.charAt(i) != cpf.charAt(0)) {
-				igual = 0;
-				break;
-			}
-		}
-		if (igual == 1)
-			return false;
-		
-		//verifying numbers
-		int soma = 0;
-		for (int i = 0; i < 9; i++) {
-			int digito = Integer.parseInt("" + cpf.charAt(i));
-			soma += (i + 1)*digito;
-		}
-		int resto = soma % 11;
-		if (resto == 10)
-			resto = 0;
-		int verificador = Integer.parseInt("" + cpf.charAt(9));
-		if (resto != verificador) {
-			return false;
-		}
-		
-		soma = 0;
-		for (int i = 0; i < 10; i++) {
-			int digito = Integer.parseInt("" + cpf.charAt(i));
-			soma += i*digito;
-		}
-		resto = soma % 11;
-		if (resto == 10)
-			resto = 0;
-		verificador = Integer.parseInt("" + cpf.charAt(10));
-		if (resto != verificador) {
-			return false;
-		}
-		
-		return true;
-	}
-	
+
 	public double calculaScore() {
 		double modificador = 0;
 		double base = CalcSeguro.VALOR_BASE.getModificador();
-		int idade = dataLicenca.getAno() - dataNascimento.getAno();
+		int idade = dataNascimento.getAno() - dataLicenca.getAno();
 		if (idade >= 18 && idade < 30) {
 			modificador = CalcSeguro.FATOR_18_30.getModificador();
 		}

@@ -66,14 +66,63 @@ public class Seguradora {
 		return false;
 	}
 	
-	public void listarClientes() {
+	public boolean removerVeiculo(String identificador, String placa) {
+		for (Cliente cliente : listaClientes) {
+			if (cliente.identificar().compareTo(identificador) == 0) {
+				int aux = 0;
+				for (Veiculo veiculo : cliente.getListaVeiculos()) {
+					if (veiculo.getPlaca().compareTo(placa) == 0) {
+						cliente.getListaVeiculos().remove(aux);
+						cliente.calculaScore();
+						return true;
+					}
+					aux++;
+				}
+			}
+		}
+		return false;
+	}
+	
+	/*
+	 * Adds a new vehicle to a client's list
+	 * Updates the client's insurance
+	 */
+	public void cadastrarVeiculo (String identificador, Veiculo novo) {
 		for (Cliente i : listaClientes) {
-			System.out.println(i.toString());
+			if (i.identificar().compareTo(identificador) == 0) {
+				i.adiocionarVeiculo(novo);
+				calcularPrecoSeguroCliente(i.identificar());
+			}
 		}
 	}
 	
 	/*
-	 * Adds a new accident to the list
+	 * Displays all the vehicles in the system
+	 */
+	public void listarVeiculos() {
+		for (Cliente cliente : listaClientes) {
+			for (Veiculo veiculo : cliente.getListaVeiculos()) {
+				System.out.println(veiculo);
+			}
+		}
+	}
+	
+	/*
+	 * Displays all the vehicles associated to the given client
+	 */
+	public void listarVeiculos(String identificador) {
+		for (Cliente cliente : listaClientes) {
+			if (cliente.identificar().compareTo(identificador) == 0) {
+				for (Veiculo veiculo : cliente.getListaVeiculos()) {
+					System.out.println(veiculo);
+				}
+			}
+		}
+	}
+	
+	/*
+	 * Adds a new accident to the list of a client
+	 * Updates the client's insurance
 	 */
 	@SuppressWarnings("resource")
 	public boolean gerarSinistro() {
@@ -82,12 +131,12 @@ public class Seguradora {
 		String data = sc.next();
 		System.out.println("Informe o endereço do sinistro ");
 		String endereco = sc.next();
-		System.out.println("Qual o nome do cliente do sinistro? ");
-		String nomeCliente = sc.next();
+		System.out.println("Qual o CPF/CNPJ do cliente do sinistro? ");
+		String identificador = sc.next();
 		Cliente clienteAtual = null;
 		for (int i = 0; i < listaClientes.size(); i++) {
 			clienteAtual = listaClientes.get(i);
-			if (nomeCliente.compareTo(clienteAtual.getNome()) == 0) {
+			if (identificador.compareTo(clienteAtual.identificar()) == 0) {
 				break;
 			}
 		}
@@ -110,14 +159,41 @@ public class Seguradora {
 			return false;
 		}
 		Sinistro novoSinistro = new Sinistro(endereco, data, this, veiculoAtual, clienteAtual);
-		double valor = calcularPrecoSeguroCliente(clienteAtual.identificar());
-		clienteAtual.setValorSeguro(valor);
 		listaSinistros.add(novoSinistro);
+		calcularPrecoSeguroCliente(clienteAtual.identificar());
 		return true;
 	}
 	
 	/*
-	 * Visualizes the accident
+	 * Removes the specified accident from the list
+	 * Updates the client's insurance
+	 */
+	public boolean removerSinistro(String identificador, String data) {
+		Sinistro atual;
+		for (int i = 0; i < listaSinistros.size(); i ++) {
+			atual = listaSinistros.get(i);
+			if (atual.getCliente().identificar().compareTo(identificador) == 0) {
+				if (atual.getData().compareTo(data) == 0) {
+					listaSinistros.remove(i);
+					calcularPrecoSeguroCliente(identificador);
+				}
+			}
+		}
+		return false;
+	}
+	
+	/*
+	 * Displays all the clients registered 
+	 */
+	public void listarClientes() {
+		for (Cliente i : listaClientes) {
+			System.out.println(i.toString());
+		}
+	}	
+	
+	
+	/*
+	 * Visualizes all the accidents of the specified client
 	 */
 	public boolean visualizarSinistro(String identificador) {
 		Sinistro atual;
@@ -132,7 +208,7 @@ public class Seguradora {
 	}
 	
 	/*
-	 * Visualizes all the accidents
+	 * Visualizes all the accidents in the system 
 	 */
 	public void listarSinistros() {
 		Sinistro atual;
@@ -143,7 +219,10 @@ public class Seguradora {
 		}
 	} 
 	
-	public double calcularPrecoSeguroCliente(String id) {
+	/*
+	 * Updates the insurance of the specified client
+	 */
+	public void calcularPrecoSeguroCliente(String id) {
 		Cliente cliente = null;
 		double preco;
 		for (Cliente i : listaClientes) {
@@ -159,10 +238,13 @@ public class Seguradora {
 			}
 		}
 		preco = cliente.calculaScore() * (1 + sinistros);
-		return preco;
-		
+		cliente.setValorSeguro(preco);		
 	}
 	
+	/*
+	 * Transfer all the vehicles from the first client to the second
+	 * Updates the insurance of the two clients
+	 */
 	public void transferirSeguro(String idOrigem, String idDestino) {
 		Cliente clienteOrigem = null;
 		Cliente clienteDestino = null;
@@ -178,20 +260,20 @@ public class Seguradora {
 			System.out.println("Cliente não encontrado! ");
 			return;
 		}
-		//checar se ele passa uma cópia ou um ponteiro
-		//programa quebra se for cópia
 		ArrayList<Veiculo> listaOrigem = clienteOrigem.getListaVeiculos();
 		ArrayList<Veiculo> listaDestino = clienteDestino.getListaVeiculos();
-		for (int i = 0; i < listaOrigem.size(); i++) {
+		int quantidade_carros = listaOrigem.size();
+		for (int i = 0; i < quantidade_carros; i++) {
 			listaDestino.add(listaOrigem.get(0));
 			listaOrigem.remove(0);										
 		}
 		clienteOrigem.setValorSeguro(0);
-		double novoValor = calcularPrecoSeguroCliente(clienteDestino.identificar());
-		clienteDestino.setValorSeguro(novoValor);
-		
+		calcularPrecoSeguroCliente(clienteDestino.identificar());		
 	}
 	
+	/*
+	 * Returns the total insurance
+	 */
 	public double calcularReceita() {
 		double receita = 0;
 		for (Cliente i : listaClientes) {
