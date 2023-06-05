@@ -5,22 +5,39 @@ public class Sinistro {
 	private final int id;
 	private String endereco;
 	private String data;
-	private Seguradora seguradora;
-	private Veiculo veiculo;
-	private Cliente cliente;
+	private Seguro seguro;
+	private Condutor condutor;
 	
-	//Constructor
-	public Sinistro(String endereco, String data, Seguradora seguradora, Veiculo veiculo, Cliente cliente) {
+	public Sinistro(String endereco, String data, Seguro seguro, Condutor condutor) {
+		gerador++;
+		this.id = gerador;
 		this.endereco = endereco;
 		this.data = data;
-		this.seguradora = seguradora;
-		this.veiculo = veiculo;
-		this.cliente = cliente;
-		gerador++;
-		id = gerador;
+		this.seguro = seguro;
+		this.condutor = condutor;
 	}
 	
 	//Getters e setters
+	public Seguro getSeguro() {
+		return seguro;
+	}
+
+	public void setSeguro(Seguro seguro) {
+		this.seguro = seguro;
+	}
+
+	public Condutor getCondutor() {
+		return condutor;
+	}
+
+	public void setCondutor(Condutor condutor) {
+		this.condutor = condutor;
+	}
+
+	public static void setGerador(int gerador) {
+		Sinistro.gerador = gerador;
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -45,25 +62,12 @@ public class Sinistro {
 	public static int getGerador() {
 		return gerador;
 	}
-	
 
-	public Seguradora getSeguradora() {
-		return seguradora;
-	}
-	
-
-	public Veiculo getVeiculo() {
-		return veiculo;
-	}
-	
-
-	public Cliente getCliente() {
-		return cliente;
-	}
-	
 	@Override
 	public String toString() {
-		return "Sinistro [id=" + id + ", endereco=" + endereco + ", data=" + data + ", seguradora=" + seguradora
-				+ ", veiculo=" + veiculo + ", cliente=" + cliente + "]";
+		return "Sinistro [id=" + id + ", endereco=" + endereco + ", data=" + data + ", seguro=" + seguro + ", condutor="
+				+ condutor + "]";
 	}
+	
+	
 }

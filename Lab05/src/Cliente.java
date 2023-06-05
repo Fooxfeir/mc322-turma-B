@@ -1,40 +1,19 @@
-import java.util.ArrayList;
 
 public abstract class Cliente {
 	private String nome;
+	private String telefone;
 	private String endereco;
-	private ArrayList<Veiculo> listaVeiculos;
-	private double valorSeguro;
+	private String email;
 
 	//Constructor
-	public Cliente(String nome, String endereco) {
+	public Cliente(String nome, String telefone, String endereco, String email) {
 		this.nome = nome;
+		this.telefone = telefone;
 		this.endereco = endereco;
-		listaVeiculos = new ArrayList<Veiculo>();
-		this.valorSeguro = 0;
+		this.email = email;
 	} 
 	
-	public void adiocionarVeiculo (Veiculo novo) {
-		listaVeiculos.add(novo);
-	}
-	
-	public void removerVeiculo (Veiculo velho) {
-		for (int i = 0; i < listaVeiculos.size(); i ++) {
-			if (velho.compararVeiculos(listaVeiculos.get(i)) == 0) {
-				listaVeiculos.remove(i);
-			}
-		}
-	}
-	
-	public abstract double calculaScore();
-
 	public abstract String identificar(); 
-		
-	@Override
-	public String toString() {
-		return "Cliente [nome=" + nome + ", endereco=" + endereco + ", listaVeiculos=" + listaVeiculos
-				+ ", valorSeguro=" + valorSeguro + "]";
-	}
 
 	//Getters e setters
 	public String getNome() {
@@ -53,21 +32,31 @@ public abstract class Cliente {
 		this.endereco = endereco;
 	}
 
-	public ArrayList<Veiculo> getListaVeiculos(){
-		return listaVeiculos;
+	public String getTelefone() {
+		return telefone;
 	}
 
-	public double getValorSeguro() {
-		return valorSeguro;
+	public void setTelefone(String telefone) {
+		this.telefone = telefone;
 	}
 
-	public void setValorSeguro(double valorSeguro) {
-		this.valorSeguro = valorSeguro;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setListaVeiculos(ArrayList<Veiculo> listaVeiculos) {
-		this.listaVeiculos = listaVeiculos;
+	public void setEmail(String email) {
+		this.email = email;
 	}
+
+	@Override
+	public String toString() {
+		return "Cliente [nome=" + nome + ", telefone=" + telefone + ", endereco=" + endereco + ", email=" + email + "]";
+	}
+
+
+	
+	
+
 	
 	
 }

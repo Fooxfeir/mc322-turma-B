@@ -2,22 +2,25 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Seguradora {
+	private final String cnpj;
 	private String nome;
-	private String endereco;
 	private String telefone;
+	private String endereco;
 	private String email;
-	private ArrayList<Sinistro> listaSinistros;
 	private ArrayList<Cliente> listaClientes;
-	
-	public Seguradora(String nome, String endereco, String telefone, String email) {
+	private ArrayList<Seguro> listaSeguros;
+
+	public Seguradora(String cnpj, String nome, String telefone, String endereco, String email) {
+		super();
+		this.cnpj = cnpj;
 		this.nome = nome;
-		this.endereco = endereco;
 		this.telefone = telefone;
+		this.endereco = endereco;
 		this.email = email;
-		listaSinistros = new ArrayList<Sinistro>();
-		listaClientes = new ArrayList<Cliente>();
+		this.listaClientes = new ArrayList<Cliente>();
+		this.listaSeguros = new ArrayList<Seguro>();
 	}
-	
+
 	/*
 	 * Tries to add the client to the clients array
 	 * If the client is already in the array, returns false
@@ -121,68 +124,6 @@ public class Seguradora {
 	}
 	
 	/*
-	 * Adds a new accident to the list of a client
-	 * Updates the client's insurance
-	 */
-	@SuppressWarnings("resource")
-	public boolean gerarSinistro() {
-		System.out.println("Informe a data do sinistro ");
-		Scanner sc = new Scanner(System.in);
-		String data = sc.next();
-		System.out.println("Informe o endereço do sinistro ");
-		String endereco = sc.next();
-		System.out.println("Qual o CPF/CNPJ do cliente do sinistro? ");
-		String identificador = sc.next();
-		Cliente clienteAtual = null;
-		for (int i = 0; i < listaClientes.size(); i++) {
-			clienteAtual = listaClientes.get(i);
-			if (identificador.compareTo(clienteAtual.identificar()) == 0) {
-				break;
-			}
-		}
-		if (clienteAtual == null) {
-			System.out.println("Cliente inexistente! ");
-			return false;
-		}
-		System.out.println("Qual a placa do veículo do sinistro? ");
-		String placaVeiculo = sc.next();
-		ArrayList<Veiculo> veiculosCliente = clienteAtual.getListaVeiculos();
-		Veiculo veiculoAtual = new Veiculo(null, null, null, 0);
-		for (int i = 0; i < veiculosCliente.size(); i++) {
-			veiculoAtual = veiculosCliente.get(i);
-			if (placaVeiculo.compareTo(veiculoAtual.getPlaca()) == 0) {
-				break;
-			}
-		}
-		if (veiculoAtual.getPlaca() == null) {
-			System.out.println("Veículo inexistente! ");
-			return false;
-		}
-		Sinistro novoSinistro = new Sinistro(endereco, data, this, veiculoAtual, clienteAtual);
-		listaSinistros.add(novoSinistro);
-		calcularPrecoSeguroCliente(clienteAtual.identificar());
-		return true;
-	}
-	
-	/*
-	 * Removes the specified accident from the list
-	 * Updates the client's insurance
-	 */
-	public boolean removerSinistro(String identificador, String data) {
-		Sinistro atual;
-		for (int i = 0; i < listaSinistros.size(); i ++) {
-			atual = listaSinistros.get(i);
-			if (atual.getCliente().identificar().compareTo(identificador) == 0) {
-				if (atual.getData().compareTo(data) == 0) {
-					listaSinistros.remove(i);
-					calcularPrecoSeguroCliente(identificador);
-				}
-			}
-		}
-		return false;
-	}
-	
-	/*
 	 * Displays all the clients registered 
 	 */
 	public void listarClientes() {
@@ -191,31 +132,40 @@ public class Seguradora {
 		}
 	}	
 	
-	
 	/*
-	 * Visualizes all the accidents of the specified client
+	 * Retorna a lista de seguros associada a um cliente
 	 */
-	public boolean visualizarSinistro(String identificador) {
-		Sinistro atual;
-		for (int i = 0; i < listaSinistros.size(); i++) {
-			atual = listaSinistros.get(i);
-			if (identificador.compareTo(atual.getCliente().identificar()) == 0) { 
-				System.out.print(atual.toString());
-				return true;
+	public ArrayList<Seguro> getSegurosPorCliente(String identificador){
+		ArrayList<Seguro> segurosCliente = new ArrayList<Seguro>();
+		for (Seguro i : listaSeguros) {
+			if (i.identificarSegurado().compareTo(identificador) == 0) {
+				segurosCliente.add(i);
 			}
 		}
-		return false;
+		return segurosCliente;
+	}
+	
+	/*
+	 * Retorna a lista de sinistros associada a um cliente
+	 */
+	public ArrayList<Sinistro> getSinistrosPorCliente(String identificador) {
+		ArrayList<Sinistro> sinistrosCliente = new ArrayList<Sinistro>();
+		for (Seguro i : listaSeguros) {
+			if (i.identificarSegurado().compareTo(identificador) == 0) {
+				sinistrosCliente.addAll(i.getListaSinistros());
+			}
+		}
+		return sinistrosCliente;
 	}
 	
 	/*
 	 * Visualizes all the accidents in the system 
 	 */
 	public void listarSinistros() {
-		Sinistro atual;
-		for (int i = 0; i < listaSinistros.size(); i++) {
-			atual = listaSinistros.get(i);
-			System.out.print(atual.toString());
-
+		for (Seguro seguro : listaSeguros) {
+			for (Sinistro sinistro : seguro.getListaSinistros()) {
+				System.out.println(sinistro);
+			}
 		}
 	} 
 	
@@ -314,14 +264,6 @@ public class Seguradora {
 		this.email = email;
 	}
 
-	public ArrayList<Sinistro> getListaSinistros() {
-		return listaSinistros;
-	}
-
-	public void setListaSinistros(ArrayList<Sinistro> listaSinistros) {
-		this.listaSinistros = listaSinistros;
-	}
-
 	public ArrayList<Cliente> getListaClientes() {
 		return listaClientes;
 	}
@@ -329,6 +271,20 @@ public class Seguradora {
 	public void setListaClientes(ArrayList<Cliente> listaClientes) {
 		this.listaClientes = listaClientes;
 	}
+
+	public ArrayList<Seguro> getListaSeguros() {
+		return listaSeguros;
+	}
+
+	public void setListaSeguros(ArrayList<Seguro> listaSeguros) {
+		this.listaSeguros = listaSeguros;
+	}
+
+	public String getCnpj() {
+		return cnpj;
+	}
+	
+	
 
 	
 }
