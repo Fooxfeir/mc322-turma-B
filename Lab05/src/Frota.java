@@ -5,18 +5,25 @@ public class Frota {
 	private ArrayList<Veiculo> listaVeiculos;
 	
 	public Frota(String code, ArrayList<Veiculo> listaVeiculos) {
-		super();
 		this.code = code;
 		this.listaVeiculos = listaVeiculos;
 	}
 	
-	public boolean addVeiculo() {
-		//TODO implementar funcao
-		return false;
+	public boolean addVeiculo(Veiculo veiculo) {
+		listaVeiculos.add(veiculo);
+		return true;
 	}
-	
-	public boolean removeVeiculo() {
-		//TODO implementar funcao
+	/*
+	 * Retorna verdadeiro se remover o veiculo especificado
+	 * Retorna falso caso contrário
+	 */
+	public boolean removeVeiculo(String placa) {
+		for (Veiculo veiculo : listaVeiculos) {
+			if (veiculo.getPlaca().compareTo(placa) == 0) {
+				listaVeiculos.remove(veiculo);
+				return true;
+			}
+		}
 		return false;
 	}
 

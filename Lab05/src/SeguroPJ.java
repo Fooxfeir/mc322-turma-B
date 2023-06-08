@@ -3,23 +3,27 @@ public class SeguroPJ extends Seguro {
 	private Frota frota;
 	private ClientePJ cliente;
 
-	public SeguroPJ(int id, Date dataInicio, Date dataFim, Seguradora seguradora, int valorMensal, 
+	public SeguroPJ(Date dataInicio, Date dataFim, Seguradora seguradora, int valorMensal, 
 					Frota frota, ClientePJ cliente) {
-		super(id, dataInicio, dataFim, seguradora, valorMensal);
+		super(dataInicio, dataFim, seguradora, valorMensal);
 		this.frota = frota;
 		this.cliente = cliente;
 	}
 
 	@Override
 	public double calcularValor() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public boolean gerarSinistro() {
-		// TODO Auto-generated method stub
-		return false;
+		double valor = CalcSeguro.VALOR_BASE.getModificador();
+		valor *= 10 + (cliente.getQtdeFuncionarios())/10;
+		valor *= 1 + 1/(this.getFrota().getListaVeiculos().size());
+		int anosPosFundacao = this.getDataInicio().getAno() - cliente.getDataFundacao().getAno();
+		valor *= 1 + (1/anosPosFundacao + 2);
+		valor *= 2 + this.getSeguradora().getSinistrosPorCliente(cliente.identificar()).size()/10;
+		int qtdeSinistrosCondutor = 0;
+		for (Condutor condutor : this.getListaCondutores()) {
+			qtdeSinistrosCondutor += condutor.getListaSinistros().size();
+		}
+		valor *= 5 + qtdeSinistrosCondutor/10;
+		return valor;
 	}
 	
 	@Override

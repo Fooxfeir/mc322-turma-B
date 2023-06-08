@@ -22,6 +22,56 @@ public class ClientePJ extends Cliente {
 		return true;
 	}
 	
+	public boolean cadastrarFrota(Frota frota) {
+		listaFrota.add(frota);
+		return true;
+	}
+	
+	/*
+	 * Checa a lista de veiculos da frota especificada
+	 * Caso o veículo especificado esteja presente, remove da lista
+	 * Caso contrário, adiciona na lista
+	 * Se a lista esvaziar, remove a frota
+	 * 
+	 * Retorna false se a frota especificada não existir
+	 * Retorna true se modificar a frota especificada
+	 */	
+	public boolean atualizarFrota(Veiculo veiculo, String code) {
+		for (Frota frota : listaFrota) {
+			if (frota.getCode().compareTo(code) == 0) {
+				for (Veiculo i : frota.getListaVeiculos()) {
+					if (veiculo.compararVeiculos(i) == 0) {
+						frota.getListaVeiculos().remove(i);
+						if (frota.getListaVeiculos().size() == 0) {
+							listaFrota.remove(frota);
+						}
+						return true;
+					}
+				}
+				frota.getListaVeiculos().add(veiculo);
+				return true;
+			}	
+		}
+		return false;
+	}
+	
+	/*
+	 * Busca na lista de frotas a com código especificado
+	 * Retorna a lista de veículos
+	 * Retorna null se não encontrar a frota
+	 */
+	
+	public ArrayList<Veiculo> getVeiculosPorFrota(String code){
+		ArrayList<Veiculo> listaRetornada = null;
+		for (Frota frota : listaFrota) {
+			if (frota.getCode().compareTo(code) == 0) {
+				listaRetornada = frota.getListaVeiculos();
+				break;
+			}
+		}
+		return listaRetornada;
+	}
+	
 	public String identificar() {
 		return cnpj;
 	}
@@ -59,7 +109,5 @@ public class ClientePJ extends Cliente {
 		return "ClientePJ [cnpj=" + cnpj + ", dataFundacao=" + dataFundacao + ", listaFrota=" + listaFrota
 				+ ", qtdeFuncionarios=" + qtdeFuncionarios + "]";
 	}
-
-	
 
 }

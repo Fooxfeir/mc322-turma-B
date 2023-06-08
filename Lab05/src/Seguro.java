@@ -3,6 +3,7 @@ import java.util.Scanner;
 
 public abstract class Seguro {
 	private final int id;
+	private static int gerador = 0;
 	private Date dataInicio;
 	private Date dataFim;
 	private Seguradora seguradora;
@@ -10,9 +11,10 @@ public abstract class Seguro {
 	protected ArrayList<Condutor> listaCondutores;
 	private int valorMensal;	
 	
-	public Seguro(int id, Date dataInicio, Date dataFim, Seguradora seguradora, int valorMensal) {
+	public Seguro(Date dataInicio, Date dataFim, Seguradora seguradora, int valorMensal) {
 		super();
-		this.id = id;
+		id = gerador;
+		gerador++;
 		this.dataInicio = dataInicio;
 		this.dataFim = dataFim;
 		this.seguradora = seguradora;
@@ -21,11 +23,15 @@ public abstract class Seguro {
 		this.valorMensal = valorMensal;
 	}
 	
-	//TODO: implementar removerSinistro e listarSinistro
-
-	//Tenta adicionar o condutor recebido na lista de condutores
-	//Retorna false se ele já estiver autorizado
-	//Retorna true caso contrário
+	public abstract double calcularValor();
+	
+	public abstract String identificarSegurado();
+	
+	/*
+	 * Tenta adicionar o condutor recebido na lista de condutores
+	 * Retorna false se ele já estiver autorizado
+	 * Retorna true caso contrário
+	 */
 	public boolean autorizarCondutor(Condutor condutor) {
 		String cpf = condutor.getCpf();
 		for (Condutor i : listaCondutores) {
@@ -39,9 +45,11 @@ public abstract class Seguro {
 		return true;
 	}
 	
-	//Tenta remover o condutor de CPF especificado da lista de condutores
-	//Retorna false se não encontrar
-	//Retorna true se encontrar e remover com sucesso
+	/*
+	 * Tenta remover o condutor de CPF especificado da lista de condutores
+	 * Retorna false se não encontrar
+	 * Retorna true se encontrar e remover com sucesso
+	 */
 	public boolean desautorizarCondutor(String cpf) {
 		for (Condutor i : listaCondutores) {
 			if (i.getCpf().compareTo(cpf) == 0) {
@@ -54,14 +62,12 @@ public abstract class Seguro {
 		return false;
 	}
 	
-	public abstract double calcularValor();
-	
-	public abstract String identificarSegurado();
-	
+	@SuppressWarnings("resource")
 	public boolean gerarSinistro() {
 		System.out.println("Informe a data do sinistro ");
 		Scanner sc = new Scanner(System.in);
-		String data = sc.next();
+		String entrada = sc.next();
+		Date data = new Date(entrada);
 		System.out.println("Informe o endereço do sinistro ");
 		String endereco = sc.next();
 		System.out.println("Qual o CPF condutor envolvido no sinistro? ");
@@ -82,22 +88,6 @@ public abstract class Seguro {
 		condutorEnvolvido.adicionarSinistro(novoSinistro);
 		return true;
 	}
-	
-	/*
-	 * Removes the specified accident from the list
-	 * Updates the client's insurance
-	 */
-	public boolean removerSinistro(int id) {
-		for (Sinistro i : listaSinistros) {
-			if (i.getId() == id) {
-				listaSinistros.remove(i);
-				//TODO: atualizar preço do seguro
-				return true;
-			}
-		}
-		return false;
-	}
-	
 	
 	public Date getDataInicio() {
 		return dataInicio;
@@ -138,6 +128,12 @@ public abstract class Seguro {
 	public void setListaCondutores(ArrayList<Condutor> listaCondutores) {
 		this.listaCondutores = listaCondutores;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "Seguro [id=" + id + ", dataInicio=" + dataInicio + ", dataFim=" + dataFim + ", seguradora=" + seguradora
+				+ ", listaSinistros=" + listaSinistros + ", listaCondutores=" + listaCondutores + ", valorMensal="
+				+ valorMensal + "]";
+	}
 	
 }

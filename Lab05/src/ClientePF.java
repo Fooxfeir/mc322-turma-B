@@ -69,6 +69,10 @@ public class ClientePF extends Cliente {
 	public String getCpf() {
 		return cpf;
 	}
+	
+	public ArrayList<Veiculo> getListaVeiculos(){
+		return listaVeiculos;
+	}
 
 	@Override
 	public String toString() {

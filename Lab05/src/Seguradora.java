@@ -69,58 +69,49 @@ public class Seguradora {
 		return false;
 	}
 	
-	public boolean removerVeiculo(String identificador, String placa) {
-		for (Cliente cliente : listaClientes) {
-			if (cliente.identificar().compareTo(identificador) == 0) {
-				int aux = 0;
-				for (Veiculo veiculo : cliente.getListaVeiculos()) {
-					if (veiculo.getPlaca().compareTo(placa) == 0) {
-						cliente.getListaVeiculos().remove(aux);
-						cliente.calculaScore();
-						return true;
-					}
-					aux++;
-				}
+	@SuppressWarnings("resource")
+	public boolean gerarSeguro(ClientePF cliente, Veiculo veiculo){
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Qual a data de início do seguro?");
+		String entrada = sc.next();
+		Date dataInicio = new Date(entrada);
+		System.out.println("Qual a data de fim do seguro?");
+		entrada = sc.next();
+		Date dataFinal = new Date(entrada);
+		
+		SeguroPF novoSeguro = new SeguroPF(dataInicio, dataFinal, this, 0, veiculo, cliente);
+		novoSeguro.calcularValor();
+		
+		listaSeguros.add(novoSeguro);
+		return true;
+	}
+	
+	@SuppressWarnings("resource")
+	public boolean gerarSeguro(ClientePJ cliente, Frota frota) {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Qual a data de início do seguro?");
+		String entrada = sc.next();
+		Date dataInicio = new Date(entrada);
+		
+		System.out.println("Qual a data de fim do seguro?");
+		entrada = sc.next();
+		Date dataFinal = new Date(entrada);
+		
+		SeguroPJ novoSeguro = new SeguroPJ(dataInicio, dataFinal, this, 0, frota, cliente);
+		novoSeguro.calcularValor();
+		
+		listaSeguros.add(novoSeguro);
+		return true;
+	}
+	
+	public boolean cancelarSeguro(int id) {
+		for (Seguro i : listaSeguros) {
+			if (i.getId() == id) {
+				listaSeguros.remove(i);
+				return true;
 			}
 		}
 		return false;
-	}
-	
-	/*
-	 * Adds a new vehicle to a client's list
-	 * Updates the client's insurance
-	 */
-	public void cadastrarVeiculo (String identificador, Veiculo novo) {
-		for (Cliente i : listaClientes) {
-			if (i.identificar().compareTo(identificador) == 0) {
-				i.adiocionarVeiculo(novo);
-				calcularPrecoSeguroCliente(i.identificar());
-			}
-		}
-	}
-	
-	/*
-	 * Displays all the vehicles in the system
-	 */
-	public void listarVeiculos() {
-		for (Cliente cliente : listaClientes) {
-			for (Veiculo veiculo : cliente.getListaVeiculos()) {
-				System.out.println(veiculo);
-			}
-		}
-	}
-	
-	/*
-	 * Displays all the vehicles associated to the given client
-	 */
-	public void listarVeiculos(String identificador) {
-		for (Cliente cliente : listaClientes) {
-			if (cliente.identificar().compareTo(identificador) == 0) {
-				for (Veiculo veiculo : cliente.getListaVeiculos()) {
-					System.out.println(veiculo);
-				}
-			}
-		}
 	}
 	
 	/*
@@ -158,6 +149,19 @@ public class Seguradora {
 		return sinistrosCliente;
 	}
 	
+	public ArrayList<Sinistro> getSinistrosPorCondutor(String cpf) {
+		ArrayList<Sinistro> sinistrosCondutor = new ArrayList<Sinistro>();
+		for (Seguro seguro : listaSeguros) {
+			for (Sinistro sinistro : seguro.getListaSinistros()) {
+				if (sinistro.getCondutor().getCpf().compareTo(cpf) == 0) {
+					sinistrosCondutor.add(sinistro);
+				}
+			}
+		}
+		return sinistrosCondutor;
+	}
+	
+	
 	/*
 	 * Visualizes all the accidents in the system 
 	 */
@@ -170,68 +174,16 @@ public class Seguradora {
 	} 
 	
 	/*
-	 * Updates the insurance of the specified client
-	 */
-	public void calcularPrecoSeguroCliente(String id) {
-		Cliente cliente = null;
-		double preco;
-		for (Cliente i : listaClientes) {
-			if (id.compareTo(i.identificar()) == 0) {
-				cliente = i;
-				break;
-			}
-		}
-		int sinistros = 0;
-		for (Sinistro i : listaSinistros) {
-			if (cliente.identificar().compareTo(i.getCliente().identificar()) == 0) {
-				sinistros++;
-			}
-		}
-		preco = cliente.calculaScore() * (1 + sinistros);
-		cliente.setValorSeguro(preco);		
-	}
-	
-	/*
-	 * Transfer all the vehicles from the first client to the second
-	 * Updates the insurance of the two clients
-	 */
-	public void transferirSeguro(String idOrigem, String idDestino) {
-		Cliente clienteOrigem = null;
-		Cliente clienteDestino = null;
-		for (Cliente clienteAtual : listaClientes) {
-			if (clienteAtual.identificar().compareTo(idOrigem) == 0) {
-				clienteOrigem = clienteAtual;
-			}
-			else if (clienteAtual.identificar().compareTo(idDestino) == 0) {
-				clienteDestino = clienteAtual;
-			}
-		}
-		if (clienteOrigem == null || clienteDestino == null) {
-			System.out.println("Cliente não encontrado! ");
-			return;
-		}
-		ArrayList<Veiculo> listaOrigem = clienteOrigem.getListaVeiculos();
-		ArrayList<Veiculo> listaDestino = clienteDestino.getListaVeiculos();
-		int quantidade_carros = listaOrigem.size();
-		for (int i = 0; i < quantidade_carros; i++) {
-			listaDestino.add(listaOrigem.get(0));
-			listaOrigem.remove(0);										
-		}
-		clienteOrigem.setValorSeguro(0);
-		calcularPrecoSeguroCliente(clienteDestino.identificar());		
-	}
-	
-	/*
 	 * Returns the total insurance
 	 */
 	public double calcularReceita() {
 		double receita = 0;
-		for (Cliente i : listaClientes) {
-			receita += i.getValorSeguro();
+		for (Seguro i : listaSeguros) {
+			receita += i.getValorMensal();
 		}
-		
 		return receita;
 	}
+	
 	//Getters and setters
 	public String getNome() {
 		return nome;

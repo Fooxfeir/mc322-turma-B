@@ -4,11 +4,11 @@ public class Sinistro {
 	private static int gerador = 0;
 	private final int id;
 	private String endereco;
-	private String data;
+	private Date data;
 	private Seguro seguro;
 	private Condutor condutor;
 	
-	public Sinistro(String endereco, String data, Seguro seguro, Condutor condutor) {
+	public Sinistro(String endereco, Date data, Seguro seguro, Condutor condutor) {
 		gerador++;
 		this.id = gerador;
 		this.endereco = endereco;
@@ -50,11 +50,11 @@ public class Sinistro {
 		this.endereco = endereco;
 	}
 
-	public String getData() {
+	public Date getData() {
 		return data;
 	}
 
-	public void setData(String data) {
+	public void setData(Date data) {
 		this.data = data;
 	}
 	

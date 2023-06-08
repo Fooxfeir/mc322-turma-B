@@ -5,10 +5,16 @@ public class Date {
 	private int ano;
 	
 	public Date(int dia, int mes, int ano) {
-		super();
 		this.dia = dia;
 		this.mes = mes;
 		this.ano = ano;
+	}
+	
+	public Date(String entrada) {
+		String[] data = entrada.split("/");
+		this.dia = Integer.parseInt(data[0]);
+		this.mes = Integer.parseInt(data[1]);
+		this.ano = Integer.parseInt(data[2]);
 	}
 
 	public boolean compareTo(Date comparado) {

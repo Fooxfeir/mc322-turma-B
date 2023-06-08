@@ -52,11 +52,4 @@ public abstract class Cliente {
 	public String toString() {
 		return "Cliente [nome=" + nome + ", telefone=" + telefone + ", endereco=" + endereco + ", email=" + email + "]";
 	}
-
-
-	
-	
-
-	
-	
 }
