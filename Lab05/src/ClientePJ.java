@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class ClientePJ extends Cliente {
 	private final String cnpj;
@@ -36,11 +37,13 @@ public class ClientePJ extends Cliente {
 	 * Retorna false se a frota especificada não existir
 	 * Retorna true se modificar a frota especificada
 	 */	
-	public boolean atualizarFrota(Veiculo veiculo, String code) {
+	public boolean atualizarFrota(String placa, String code) {
+		@SuppressWarnings("resource")
+		Scanner sc = new Scanner(System.in);
 		for (Frota frota : listaFrota) {
 			if (frota.getCode().compareTo(code) == 0) {
 				for (Veiculo i : frota.getListaVeiculos()) {
-					if (veiculo.compararVeiculos(i) == 0) {
+					if (i.getPlaca().compareTo(placa) == 0) {
 						frota.getListaVeiculos().remove(i);
 						if (frota.getListaVeiculos().size() == 0) {
 							listaFrota.remove(frota);
@@ -48,6 +51,13 @@ public class ClientePJ extends Cliente {
 						return true;
 					}
 				}
+				System.out.println("Qual a marca? ");
+				String marca = sc.next();
+				System.out.println("Qual o modelo? ");
+				String modelo = sc.next();
+				System.out.println("Qual o ano? ");
+				int ano = sc.nextInt();
+				Veiculo veiculo = new Veiculo(placa, marca, modelo, ano);
 				frota.getListaVeiculos().add(veiculo);
 				return true;
 			}	

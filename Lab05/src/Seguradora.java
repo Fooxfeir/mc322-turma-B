@@ -123,6 +123,27 @@ public class Seguradora {
 		}
 	}	
 	
+	public void listarVeiculoPorCliente(String identificador){
+		for (Cliente cliente : this.getListaClientes()) {
+			if (cliente.identificar().compareTo(identificador) == 0) {
+				if (cliente instanceof ClientePF) {
+					ClientePF clientePF = (ClientePF) cliente;
+					for (Veiculo veiculo : clientePF.getListaVeiculos()) {
+						System.out.println(veiculo);
+					}
+				}
+				if (cliente instanceof ClientePJ) {
+					ClientePJ clientePJ = (ClientePJ) cliente;
+					for (Frota frota : clientePJ.getListaFrota()) {
+						for (Veiculo veiculo : frota.getListaVeiculos()) {
+							System.out.println(veiculo);
+						}
+					}
+				}
+			}
+		}
+	}
+	
 	/*
 	 * Retorna a lista de seguros associada a um cliente
 	 */

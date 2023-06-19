@@ -9,7 +9,7 @@ public class Main {
 		SubmenuOperacoes subOperacao;
 		String comando;
 		int opcao;
-		Seguradora setePalmos = new Seguradora("setePalmos", "Curitiba", "05922", "setePalmos@gmail.com");
+		Seguradora setePalmos = new Seguradora("83.562.625/0001-74", "Sete Palmos", "399", "casa", "email");
 		ArrayList<Seguradora> seguradoras = new ArrayList<Seguradora>();
 		seguradoras.add(setePalmos);
 		System.out.println("Bem-vindo ao sistema da Sete Palmos!");
@@ -61,11 +61,10 @@ public class Main {
 						} while (!Validacao.validaCPF(cpf));
 						System.out.println("Qual o genero? ");
 						String genero = sc.next();
-						System.out.println("Qual o ano de nascimento? ");
-						int nascimento = sc.nextInt();
-						Date data = new Date(1, 1, nascimento);
-						Date hoje = new Date(1, 1, 2023);
-						ClientePF novoCliente = new ClientePF(nome, endereco, cpf, genero, data, "EM", hoje, "Média");
+						System.out.println("Qual a data de nascimento? ");
+						String nascimento = sc.next();
+						Date data = new Date(nascimento);
+						ClientePF novoCliente = new ClientePF(nome, "9887", "casa", "email", cpf, genero, "em", data);
 						System.out.println("Quantos carros possui? ");
 						int qntCarros = sc.nextInt();
 						for (int i = 0; i < qntCarros; i++) {
@@ -78,10 +77,9 @@ public class Main {
 							System.out.println("Qual o ano? ");
 							int ano = sc.nextInt();
 							Veiculo carro = new Veiculo(placa, marca, modelo, ano);
-							novoCliente.adiocionarVeiculo(carro);
+							novoCliente.cadastrarVeiculo(carro);
 						}
 						setePalmos.cadastrarCliente(novoCliente);
-						setePalmos.calcularPrecoSeguroCliente(cpf);
 					}
 					else {
 						String cnpj;
@@ -94,10 +92,58 @@ public class Main {
 						} while (!Validacao.validaCNPJ(cnpj));
 						System.out.println("Quantos funcionários possui? ");
 						int qtdeFuncionarios = sc.nextInt();
-						ClientePJ novoCliente = new ClientePJ(nome, endereco, cnpj, null, qtdeFuncionarios);
-						System.out.println("Quantos carros possui? ");
-						int qntCarros = sc.nextInt();
-						for (int i = 0; i < qntCarros; i++) {
+						System.out.println("Qual a data de fundação? ");
+						String fundacao = sc.next();
+						Date data = new Date(fundacao);
+						ClientePJ novoCliente = new ClientePJ(nome, "923", endereco, "email", cnpj, data, qtdeFuncionarios);
+						System.out.println("Quantas frotas possui? ");
+						int qntFrotas = sc.nextInt();
+						for (int i = 0; i < qntFrotas; i++) {
+							System.out.println("Qual o código dessa frota? ");
+							String code = sc.next();
+							Frota novaFrota = new Frota(code);
+							System.out.println("Quantos carros possui? ");
+							int qntCarros = sc.nextInt();
+							for (int j = 0; j < qntCarros; j++) {
+								System.out.println("Qual a placa? ");
+								String placa = sc.next();
+								System.out.println("Qual a marca? ");
+								String marca = sc.next();
+								System.out.println("Qual o modelo? ");
+								String modelo = sc.next();
+								System.out.println("Qual o ano? ");
+								int ano = sc.nextInt();
+								Veiculo carro = new Veiculo(placa, marca, modelo, ano);
+								novaFrota.addVeiculo(carro);
+							}
+						}
+						setePalmos.cadastrarCliente(novoCliente);
+					}
+					break;
+				case CADASTRAR_SEGURADORA:
+					System.out.println("Qual o CNPJ? ");
+					String cnpj = sc.next();
+					System.out.println("Qual o nome? ");
+					nome = sc.next();
+					System.out.println("Qual o endereço? ");
+					endereco = sc.next();
+					System.out.println("Qual o telefone? ");
+					String telefone = sc.next();
+					System.out.println("Qual o email? ");
+					String email = sc.next();
+					Seguradora nova_seguradora = new Seguradora(cnpj, nome, telefone, endereco, email);
+					seguradoras.add(nova_seguradora);
+					break;
+				case CADASTRAR_VEICULO:
+					String cpf;
+					do {
+						System.out.println("Qual o CPF do cliente? ");
+						cpf = sc.next();
+					}while (!Validacao.validaCPF(cpf));
+					//adiciona o veículo na lista do cliente
+					for (Cliente cliente : setePalmos.getListaClientes()) {
+						if (cliente.identificar().compareTo(cpf) == 0) {
+							ClientePF clientePF = (ClientePF) cliente;
 							System.out.println("Qual a placa? ");
 							String placa = sc.next();
 							System.out.println("Qual a marca? ");
@@ -107,39 +153,32 @@ public class Main {
 							System.out.println("Qual o ano? ");
 							int ano = sc.nextInt();
 							Veiculo carro = new Veiculo(placa, marca, modelo, ano);
-							novoCliente.adiocionarVeiculo(carro);
+							clientePF.cadastrarVeiculo(carro);
+							break;
 						}
-						setePalmos.cadastrarCliente(novoCliente);
-						setePalmos.calcularPrecoSeguroCliente(cnpj);
+					}
+					//atualiza os valores dos seguros desse cliente
+					for (Seguro seguro : setePalmos.getListaSeguros()) {
+						if (seguro instanceof SeguroPF) {
+							SeguroPF seguroPF = (SeguroPF) seguro;
+							if (seguroPF.getCliente().identificar().compareTo(cpf) == 0) {
+								seguroPF.calcularValor();
+							}
+						}
 					}
 					break;
-				case CADASTRAR_SEGURADORA:
-					System.out.println("Qual o nome? ");
-					nome = sc.next();
-					System.out.println("Qual o endereço? ");
-					endereco = sc.next();
-					System.out.println("Qual o telefone? ");
-					String telefone = sc.next();
-					System.out.println("Qual o email? ");
-					String email = sc.next();
-					Seguradora nova_seguradora = new Seguradora(nome, endereco, telefone, email);
-					seguradoras.add(nova_seguradora);
-					break;
-				case CADASTRAR_VEICULO:
-					System.out.println("Qual o CPF/CNPJ do cliente? ");
-					String identificador = sc.next();
-					System.out.println("Qual a placa? ");
-					String placa = sc.next();
-					System.out.println("Qual a marca? ");
-					String marca = sc.next();
-					System.out.println("Qual o modelo? ");
-					String modelo = sc.next();
-					System.out.println("Qual o ano? ");
-					int ano = sc.nextInt();
-					Veiculo carro = new Veiculo(placa, marca, modelo, ano);
-					setePalmos.cadastrarVeiculo(identificador, carro);
-					setePalmos.calcularPrecoSeguroCliente(identificador);
-					break;
+				case CADASTRAR_FROTA:
+					do {
+						System.out.println("Qual o CNPJ do cliente? ");
+						cnpj = sc.next();
+					}while (!Validacao.validaCNPJ(cnpj));
+					for (Cliente cliente : setePalmos.getListaClientes()) {
+						ClientePJ clientePJ = (ClientePJ) cliente;						
+						System.out.println("Qual o código da frota?");
+						String code = sc.next();
+						Frota frota = new Frota(code);
+						clientePJ.cadastrarFrota(frota);
+					}
 				case VOLTAR:
 					break;
 				default:
@@ -162,7 +201,9 @@ public class Main {
 				case LISTAR_SINISTROS_POR_CLIENTE:
 					System.out.println("Qual o CPF/CNPJ do cliente? ");
 					String identificador = sc.next();
-					setePalmos.visualizarSinistro(identificador);
+					for (Sinistro sinistro : setePalmos.getSinistrosPorCliente(identificador)) {
+						System.out.println(sinistro);
+					}
 					break;
 				case LISTAR_SINISTROS_POR_SEGURADORA:
 					System.out.println("Qual o nome da seguradora? ");
@@ -176,14 +217,16 @@ public class Main {
 				case LISTAR_VEICULO_POR_CLIENTE:
 					System.out.println("Qual o CPF/CNPJ do cliente? ");
 					identificador = sc.next();
-					setePalmos.listarVeiculos(identificador);
+					setePalmos.listarVeiculoPorCliente(identificador);
 					break;
 				case LISTAR_VEICULO_POR_SEGURADORA:
 					System.out.println("Qual o nome da seguradora? ");
 					identificador = sc.next();
 					for (Seguradora seguradora : seguradoras) {
 						if (seguradora.getNome().compareTo(identificador) == 0) {
-							seguradora.listarVeiculos();
+							for (Cliente cliente : seguradora.getListaClientes()) {
+								seguradora.listarVeiculoPorCliente(cliente.identificar());
+							}
 						}
 					}
 					break;
@@ -211,20 +254,33 @@ public class Main {
 					setePalmos.removerCliente(identificador);
 					break;
 				case EXCLUIR_SINISTRO:
-					System.out.println("Qual o CPF/CNPJ do cliente? ");
-					identificador = sc.next();
-					System.out.println("Qual a data do sinistro? ");
-					String data = sc.next();
-					setePalmos.removerSinistro(identificador, data);
-					setePalmos.calcularPrecoSeguroCliente(identificador);
+					System.out.println("Qual o id do seguro? ");
+					int id = sc.nextInt();
+					for (Seguro seguro : setePalmos.getListaSeguros()) {
+						if (seguro.getId() == id) {
+							seguro.removerSinistro();
+						}
+					}
 					break;
 				case EXCLUIR_VEICULO:
-					System.out.println("Qual o CPF/CNPJ do cliente? ");
+					System.out.println("Qual o CPF do cliente? ");
 					identificador = sc.next();
 					System.out.println("Qual a placa do veículo? ");
 					String placa = sc.next();
-					setePalmos.removerVeiculo(identificador, placa);
-					setePalmos.calcularPrecoSeguroCliente(identificador);
+					for (Cliente cliente : setePalmos.getListaClientes()) {
+						if (cliente.identificar().compareTo(identificador) == 0) {
+							ClientePF clientePF = (ClientePF) cliente;
+							clientePF.removerVeiculo(placa);
+							for (Seguro seguro : setePalmos.getListaSeguros()) {
+								if (seguro instanceof SeguroPF) {
+									SeguroPF seguroPF = (SeguroPF) seguro;
+									if (seguroPF.getCliente().identificar().compareTo(identificador) == 0) {
+										seguroPF.calcularValor();
+									}
+								}
+							}
+						}
+					}
 					break;
 				case VOLTAR:
 					break;
@@ -232,17 +288,43 @@ public class Main {
 					break;
 				}
 				break;
-				
+			
+			case ATUALIZAR_FROTA:
+				String cnpj;
+				do {
+					System.out.println("Qual o CNPJ do cliente? ");
+					cnpj = sc.next();
+				}while (!Validacao.validaCNPJ(cnpj));
+				System.out.println("Qual o código da frota?");
+				String code = sc.next();
+				//adiciona o veículo na lista do cliente
+				for (Cliente cliente : setePalmos.getListaClientes()) {
+					if (cliente.identificar().compareTo(cnpj) == 0) {
+						ClientePJ clientePJ = (ClientePJ) cliente;
+						System.out.println("Qual a placa? ");
+						String placa = sc.next();
+						clientePJ.atualizarFrota(placa, code);
+						break;
+					}
+					for (Seguro seguro : setePalmos.getListaSeguros()) {
+						if (seguro instanceof SeguroPJ) {
+							SeguroPJ seguroPJ = (SeguroPJ) seguro;
+							if (seguroPJ.getCliente().identificar().compareTo(cnpj) == 0) {
+								seguroPJ.calcularValor();
+							}
+						}
+					}
+				}
 			
 			case GERAR_SINISTRO:
-				setePalmos.gerarSinistro();
-				break;
-			case TRANSFERIR_SEGURO:
-				System.out.println("Qual o CPF/CNPJ do cliente de origem? ");
-				String id1 = sc.next();
-				System.out.println("Qual o CPF/CNPJ do cliente de destino? ");
-				String id2 = sc.next();
-				setePalmos.transferirSeguro(id1, id2);
+				System.out.println("Qual o id do seguro? ");
+				int id = sc.nextInt();
+				for (Seguro seguro : setePalmos.getListaSeguros()) {
+					if (seguro.getId() == id) {
+						seguro.gerarSinistro();
+						seguro.calcularValor();
+					}
+				}
 				break;
 			case CALCULAR_RECEITA_SEGURADORA:
 				double receita = setePalmos.calcularReceita();

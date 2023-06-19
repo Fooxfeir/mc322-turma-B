@@ -89,6 +89,20 @@ public abstract class Seguro {
 		return true;
 	}
 	
+	@SuppressWarnings("resource")
+	public boolean removerSinistro() {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Qual o id do seguro? ");
+		int id = sc.nextInt();
+		for (Sinistro sinistro : this.getListaSinistros()) {
+			if (sinistro.getId() == id) {
+				this.listaSinistros.remove(sinistro);
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public Date getDataInicio() {
 		return dataInicio;
 	}

@@ -4,6 +4,7 @@ public enum MenuOperacoes {
 	CADASTROS(new SubmenuOperacoes[] {
 			SubmenuOperacoes.CADASTRAR_CLIENTE,
 			SubmenuOperacoes.CADASTRAR_VEICULO,
+			SubmenuOperacoes.CADASTRAR_FROTA,
 			SubmenuOperacoes.CADASTRAR_SEGURADORA,
 			SubmenuOperacoes.VOLTAR
 	}),
@@ -21,6 +22,7 @@ public enum MenuOperacoes {
 			SubmenuOperacoes.EXCLUIR_SINISTRO,
 			SubmenuOperacoes.VOLTAR
 	}),
+	ATUALIZAR_FROTA,
 	GERAR_SINISTRO,
 	TRANSFERIR_SEGURO,
 	CALCULAR_RECEITA_SEGURADORA;

@@ -4,9 +4,9 @@ public class Frota {
 	private String code;
 	private ArrayList<Veiculo> listaVeiculos;
 	
-	public Frota(String code, ArrayList<Veiculo> listaVeiculos) {
+	public Frota(String code) {
 		this.code = code;
-		this.listaVeiculos = listaVeiculos;
+		this.listaVeiculos = new ArrayList<Veiculo>();
 	}
 	
 	public boolean addVeiculo(Veiculo veiculo) {

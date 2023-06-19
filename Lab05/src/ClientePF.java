@@ -8,13 +8,13 @@ public class ClientePF extends Cliente {
 	private ArrayList<Veiculo> listaVeiculos;
 
 	public ClientePF(String nome, String telefone, String endereco, String email, String cpf, String genero,
-			String educacao, Date dataNascimento, ArrayList<Veiculo> listaVeiculos) {
+			String educacao, Date dataNascimento) {
 		super(nome, telefone, endereco, email);
 		this.cpf = cpf;
 		this.genero = genero;
 		this.educacao = educacao;
 		this.dataNascimento = dataNascimento;
-		this.listaVeiculos = listaVeiculos;
+		this.listaVeiculos = new ArrayList<Veiculo>();
 	}
 
 	public boolean compararCliente(ClientePF comparado) {
@@ -28,10 +28,10 @@ public class ClientePF extends Cliente {
 		listaVeiculos.add(novo);
 	}
 	
-	public void removerVeiculo (Veiculo velho) {
-		for (int i = 0; i < listaVeiculos.size(); i ++) {
-			if (velho.compararVeiculos(listaVeiculos.get(i)) == 0) {
-				listaVeiculos.remove(i);
+	public void removerVeiculo (String placa) {
+		for (Veiculo veiculo : listaVeiculos) {
+			if (placa.compareTo(veiculo.getPlaca()) == 0) {
+				listaVeiculos.remove(veiculo);
 			}
 		}
 	}
