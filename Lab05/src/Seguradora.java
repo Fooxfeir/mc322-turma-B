@@ -79,7 +79,7 @@ public class Seguradora {
 		entrada = sc.next();
 		Date dataFinal = new Date(entrada);
 		
-		SeguroPF novoSeguro = new SeguroPF(dataInicio, dataFinal, this, 0, veiculo, cliente);
+		SeguroPF novoSeguro = new SeguroPF(dataInicio, dataFinal, this, veiculo, cliente);
 		novoSeguro.calcularValor();
 		
 		listaSeguros.add(novoSeguro);
@@ -97,7 +97,7 @@ public class Seguradora {
 		entrada = sc.next();
 		Date dataFinal = new Date(entrada);
 		
-		SeguroPJ novoSeguro = new SeguroPJ(dataInicio, dataFinal, this, 0, frota, cliente);
+		SeguroPJ novoSeguro = new SeguroPJ(dataInicio, dataFinal, this, frota, cliente);
 		novoSeguro.calcularValor();
 		
 		listaSeguros.add(novoSeguro);

@@ -42,6 +42,11 @@ public class Frota {
 	public void setListaVeiculos(ArrayList<Veiculo> listaVeiculos) {
 		this.listaVeiculos = listaVeiculos;
 	}
+
+	@Override
+	public String toString() {
+		return "Frota [code=" + code + ", listaVeiculos=" + listaVeiculos + "]";
+	}
 	
 	
 }

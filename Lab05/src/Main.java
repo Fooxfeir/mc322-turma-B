@@ -186,6 +186,43 @@ public class Main {
 				}
 				break;
 				
+			case AUTORIZACOES:
+				SubmenuOperacoes submenuA[] = MenuOperacoes.AUTORIZACOES.getSubmenu();
+				for (int i = 0; i < submenuA.length; i++) {
+					System.out.println(i + "-" + submenuA[i]);
+				}
+				opcao = sc.nextInt();
+				subOperacao = submenuA[opcao];
+				switch (subOperacao){
+				case AUTORIZAR_CONDUTOR:
+					System.out.println("Qual o id do seguro? ");
+					int id = sc.nextInt();
+					for (Seguro seguro : setePalmos.getListaSeguros()) {
+						if (seguro.getId() == id) {
+							System.out.println("Qual o cpf do condutor? ");
+							String cpf = sc.next();
+							Condutor novoCondutor = new Condutor(cpf, null, null, null, null, null);
+							seguro.autorizarCondutor(novoCondutor);
+						}
+					}
+					break;
+				case DESAUTORIZAR_CONDUTOR:
+					System.out.println("Qual o id do seguro? ");
+					id = sc.nextInt();
+					for (Seguro seguro : setePalmos.getListaSeguros()) {
+						if (seguro.getId() == id) {
+							System.out.println("Qual o cpf do condutor? ");
+							String cpf = sc.next();
+							seguro.desautorizarCondutor(cpf);
+							seguro.calcularValor();
+						}
+					}
+					break;
+				case VOLTAR:
+					break;
+				default:
+					break;
+				}
 				
 			case LISTAR:
 				SubmenuOperacoes submenu1[] = MenuOperacoes.LISTAR.getSubmenu();
@@ -214,6 +251,50 @@ public class Main {
 						}
 					}
 					break;
+				case LISTAR_SEGURO_POR_CLIENTE:
+					System.out.println("Qual o CPF/CNPJ do cliente? ");
+					identificador = sc.next();
+					for (Seguro seguro : setePalmos.getListaSeguros()) {
+						if (seguro instanceof SeguroPF) {
+							SeguroPF seguroPF = (SeguroPF) seguro;
+							if (seguroPF.getCliente().identificar().compareTo(identificador) == 0) {
+								for (Sinistro sinistro : seguroPF.getListaSinistros()) {
+									System.out.println(sinistro);
+								}
+							}
+						}
+						else {
+							SeguroPJ seguroPJ = (SeguroPJ) seguro;
+							if (seguroPJ.getCliente().identificar().compareTo(identificador) == 0) {
+								for (Sinistro sinistro : seguroPJ.getListaSinistros()) {
+									System.out.println(sinistro);
+								}
+							}
+						}
+					}
+				case LISTAR_CONDUTOR_POR_SEGURO:
+					System.out.println("Qual o id do seguro? ");
+					int id = sc.nextInt();
+					for (Seguro seguro : setePalmos.getListaSeguros()) {
+						if (seguro.getId() == id) {
+							for (Condutor condutor : seguro.getListaCondutores()) {
+								System.out.println(condutor);
+							}
+						}
+					}
+				case LISTAR_FROTA_POR_CLIENTE:
+					System.out.println("Qual o CNPJ do cliente? ");
+					identificador = sc.next();
+					for (Cliente cliente : setePalmos.getListaClientes()) {
+						if (cliente.identificar().compareTo(identificador) == 0) {
+							ClientePJ clientePJ = (ClientePJ) cliente;
+							for (Frota frota : clientePJ.getListaFrota()) {
+								System.out.println(frota);
+							}
+
+						}
+					}
+
 				case LISTAR_VEICULO_POR_CLIENTE:
 					System.out.println("Qual o CPF/CNPJ do cliente? ");
 					identificador = sc.next();
@@ -237,7 +318,41 @@ public class Main {
 				}
 				
 				break;
-				
+			
+			case GERAR_SEGURO:
+				System.out.println("Qual o CPF/CNPJ do cliente? ");
+				String identificador = sc.next();
+				Cliente clienteSeguro = null;
+				for (Cliente cliente : setePalmos.getListaClientes()) {
+					if (cliente.identificar().compareTo(identificador) == 0) {
+						clienteSeguro = cliente;
+					}
+				}
+				if (clienteSeguro instanceof ClientePF) {
+					ClientePF clientePF = (ClientePF) clienteSeguro;
+					System.out.println("Qual a placa do veiculo? ");
+					String placa = sc.next();
+					Veiculo veiculoSeguro = null;
+					for (Veiculo veiculo : clientePF.getListaVeiculos()) {
+						if (veiculo.getPlaca().compareTo(placa) == 0) {
+							veiculoSeguro = veiculo;
+						}
+					}
+					setePalmos.gerarSeguro(clientePF, veiculoSeguro);
+				}
+				if (clienteSeguro instanceof ClientePJ) {
+					ClientePJ clientePJ = (ClientePJ) clienteSeguro;
+					System.out.println("Qual o código da frota? ");
+					String code = sc.next();
+					Frota frotaSeguro = null;
+					for (Frota frota : clientePJ.getListaFrota()) {
+						if (frota.getCode().compareTo(code) == 0) {
+							frotaSeguro = frota;
+						}
+					}
+					setePalmos.gerarSeguro(clientePJ, frotaSeguro);
+				}
+				break;
 			
 			case EXCLUIR:
 				SubmenuOperacoes submenu2[] = MenuOperacoes.EXCLUIR.getSubmenu();
@@ -246,7 +361,6 @@ public class Main {
 				}
 				opcao = sc.nextInt();
 				subOperacao = submenu2[opcao];
-				String identificador;
 				switch(subOperacao) {
 				case EXCLUIR_CLIENTE:
 					System.out.println("Qual seu CPF/CNPJ? ");
@@ -261,7 +375,7 @@ public class Main {
 							seguro.removerSinistro();
 						}
 					}
-					break;
+					break;	
 				case EXCLUIR_VEICULO:
 					System.out.println("Qual o CPF do cliente? ");
 					identificador = sc.next();

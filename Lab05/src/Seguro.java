@@ -11,7 +11,7 @@ public abstract class Seguro {
 	protected ArrayList<Condutor> listaCondutores;
 	private int valorMensal;	
 	
-	public Seguro(Date dataInicio, Date dataFim, Seguradora seguradora, int valorMensal) {
+	public Seguro(Date dataInicio, Date dataFim, Seguradora seguradora) {
 		super();
 		id = gerador;
 		gerador++;
@@ -20,7 +20,7 @@ public abstract class Seguro {
 		this.seguradora = seguradora;
 		this.listaSinistros = new ArrayList<Sinistro>();
 		this.listaCondutores = new ArrayList<Condutor>();
-		this.valorMensal = valorMensal;
+		this.calcularValor();
 	}
 	
 	public abstract double calcularValor();

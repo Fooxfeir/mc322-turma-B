@@ -8,8 +8,16 @@ public enum MenuOperacoes {
 			SubmenuOperacoes.CADASTRAR_SEGURADORA,
 			SubmenuOperacoes.VOLTAR
 	}),
+	AUTORIZACOES(new SubmenuOperacoes[] {
+			SubmenuOperacoes.AUTORIZAR_CONDUTOR,
+			SubmenuOperacoes.DESAUTORIZAR_CONDUTOR,
+			SubmenuOperacoes.VOLTAR
+	}),
 	LISTAR(new SubmenuOperacoes[] {
 			SubmenuOperacoes.LISTAR_CLIENTE,
+			SubmenuOperacoes.LISTAR_SEGURO_POR_CLIENTE,
+			SubmenuOperacoes.LISTAR_CONDUTOR_POR_SEGURO,
+			SubmenuOperacoes.LISTAR_FROTA_POR_CLIENTE,
 			SubmenuOperacoes.LISTAR_SINISTROS_POR_SEGURADORA,
 			SubmenuOperacoes.LISTAR_SINISTROS_POR_CLIENTE,
 			SubmenuOperacoes.LISTAR_VEICULO_POR_CLIENTE,
@@ -23,6 +31,7 @@ public enum MenuOperacoes {
 			SubmenuOperacoes.VOLTAR
 	}),
 	ATUALIZAR_FROTA,
+	GERAR_SEGURO,
 	GERAR_SINISTRO,
 	TRANSFERIR_SEGURO,
 	CALCULAR_RECEITA_SEGURADORA;

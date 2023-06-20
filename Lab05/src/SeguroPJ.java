@@ -3,9 +3,9 @@ public class SeguroPJ extends Seguro {
 	private Frota frota;
 	private ClientePJ cliente;
 
-	public SeguroPJ(Date dataInicio, Date dataFim, Seguradora seguradora, int valorMensal, 
+	public SeguroPJ(Date dataInicio, Date dataFim, Seguradora seguradora, 
 					Frota frota, ClientePJ cliente) {
-		super(dataInicio, dataFim, seguradora, valorMensal);
+		super(dataInicio, dataFim, seguradora);
 		this.frota = frota;
 		this.cliente = cliente;
 	}
